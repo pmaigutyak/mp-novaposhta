@@ -7,13 +7,13 @@ from django.conf import settings
 
 
 def generate_operations():
-    
+
     operations = []
-    
+
     for code, name in settings.LANGUAGES:
-    
+
         operations += [
-            
+
             migrations.AddField(
                 model_name='warehouse',
                 name='address_%s' % code,
@@ -24,7 +24,7 @@ def generate_operations():
                 name='title_%s' % code,
                 field=models.CharField(db_index=True, max_length=255, null=True, verbose_name='Title'),
             ),
-            
+
         ]
 
         return operations
@@ -32,7 +32,7 @@ def generate_operations():
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('nova_poshta', '0001_initial'),
+        ('novaposhta', '0001_initial'),
     ]
 
     operations = generate_operations()
