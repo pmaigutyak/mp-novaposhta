@@ -1,0 +1,2 @@
+
+-e git://github.com/pmaigutyak/mp-search.git#egg=mp-search
