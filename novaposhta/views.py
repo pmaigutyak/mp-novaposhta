@@ -1,7 +1,7 @@
 
 from django.http import JsonResponse
 
-from search import model_search
+from model_search import model_search
 
 from novaposhta.models import Warehouse
 

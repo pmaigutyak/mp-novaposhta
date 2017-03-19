@@ -9,3 +9,5 @@ class NovaPoshtaAppConfig(AppConfig):
 
 
 default_app_config = 'novaposhta.NovaPoshtaAppConfig'
+
+__version__ = '1.0'

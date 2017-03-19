@@ -1,2 +1,2 @@
 
--e git://github.com/pmaigutyak/mp-search.git#egg=mp-search
+django-model-search
