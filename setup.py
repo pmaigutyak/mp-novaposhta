@@ -7,7 +7,7 @@ from novaposhta import __version__
 setup(
     name='django-novaposhta',
     version=__version__,
-    description='',
+    description='Django nova poshta ua api app',
     long_description=open('README.md').read(),
     author='Paul Maigutyak',
     author_email='pmaigutyak@gmail.com',
