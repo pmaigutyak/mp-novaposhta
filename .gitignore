@@ -12,3 +12,5 @@ storage.db
 *.pem
 *.crt
 media
+dist
+django_novaposhta.egg-info
