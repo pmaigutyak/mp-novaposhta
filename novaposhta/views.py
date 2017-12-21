@@ -10,15 +10,22 @@ def autocomplete(request):
 
     query = request.GET.get('query')
 
-    warehouses = Warehouse.objects.all()
+    if query:
 
-    suggestions = []
+        warehouses = Warehouse.objects.all()
 
-    for warehouse in model_search(query, warehouses, Warehouse.search_fields):
-        if warehouse.full_name not in suggestions:
-            suggestions.append(warehouse.full_name)
+        suggestions = []
+
+        for warehouse in model_search(query, warehouses, Warehouse.search_fields):
+            if warehouse.full_name not in suggestions:
+                suggestions.append(warehouse.full_name)
+
+        suggestions = suggestions[:10]
+
+    else:
+        suggestions = []
 
     return JsonResponse({
         'query': query,
-        'suggestions': suggestions[:10]
+        'suggestions': suggestions
     })
