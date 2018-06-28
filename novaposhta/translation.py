@@ -1,10 +1,7 @@
 
-from modeltranslation.translator import register, TranslationOptions
+from modeltranslation.translator import translator
 
 from novaposhta.models import Warehouse
 
 
-@register(Warehouse)
-class WarehouseTranslationOptions(TranslationOptions):
-
-    fields = ('title', 'address', )
+translator.register(Warehouse, fields=['title', 'address'])

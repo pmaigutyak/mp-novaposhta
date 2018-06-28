@@ -4,31 +4,28 @@ Django nova poshta ua api app.
 
 ### Installation
 
-Install with pip:
-
-```sh
-$ pip install django-novaposhta
-```
-
-Add novaposhta to urls.py:
+1) Install with pip:
 
 ```
-urlpatterns += i18n_patterns(
-    url(r'^nova-poshta/', include('novaposhta.urls', namespace='nova-poshta')),
-)
+pip install django-novaposhta
 ```
 
-Add novaposhta to settings.py:
+2) Add app to urls.py:
+
 ```
-INSTALLED_APPS = [
-    'novaposhta',
-]
+path('novaposhta/', include('novaposhta.urls')),
 ```
 
-Run migrations:
-```
-$ python manage.py migrate
-```
+3) Add `novaposhta` to INSTALLED_APPS
+
+4) Add `NOVA_POSHTA_API_KEY` to your settings.py
+
+5) Run `python manage.py migrate`
+
+### Refresh warehouses
+To refresh warehouses you should login as staff and visit
+`/novaposhta/refresh` url.
+Old warehouse records will be removed.
 
 ### Requirements
 

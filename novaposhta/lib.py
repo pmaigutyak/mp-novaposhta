@@ -1,49 +1,73 @@
 
-import httplib
-import json
+import requests
+
+from django.apps import apps
+from django.conf import settings
+
+from model_search import model_search
 
 from novaposhta.settings import NOVA_POSHTA_API_KEY
 from novaposhta.models import Warehouse
 
 
+def search_warehouses(query, limit=None):
+
+    if not query:
+        return []
+
+    queryset = model_search(
+        query, Warehouse.objects.all(), ['title', 'address'])
+
+    if limit is not None:
+        return queryset[:limit]
+
+    return queryset
+
+
 def refresh_warehouses():
 
-    api_domain = 'api.novaposhta.ua'
+    api_domain = 'https://api.novaposhta.ua'
 
-    method = 'POST'
+    api_path = '/v2.0/json/AddressGeneral/getWarehouses'
 
-    url = '/v2.0/json/AddressGeneral/getWarehouses'
-
-    headers = {
-        'Content-Type': 'application/json'
-    }
-
-    body = json.dumps({
+    api_data = {
         'modelName': 'AddressGeneral',
         'calledMethod': 'getWarehouses',
         'apiKey': NOVA_POSHTA_API_KEY
-    })
+    }
 
-    try:
-        conn = httplib.HTTPConnection(api_domain)
+    response = requests.post(api_domain + api_path, json=api_data).json()
 
-        conn.request(method, url, body, headers)
+    if not response.get('success'):
+        raise Exception(','.join(response.get('errors')))
 
-        response_data = json.loads(conn.getresponse().read())
+    Warehouse.objects.all().delete()
 
-        if response_data.get('success') is not True:
-            raise Exception
+    warehouses = []
 
-        Warehouse.objects.all().delete()
+    for item in response.get('data'):
 
-        for item in response_data.get('data'):
-            Warehouse.objects.create(
-                title_uk=item.get('Description'),
-                title_ru=item.get('DescriptionRu'),
-                address_uk=item.get('CityDescription'),
-                address_ru=item.get('CityDescriptionRu'),
-            )
+        params = {
+            'title': item.get('Description'),
+            'address': item.get('CityDescription')
+        }
 
-        conn.close()
-    except Exception as e:
-        print(e)
+        if apps.is_installed('modeltranslation'):
+
+            langs = dict(settings.LANGUAGES)
+
+            if 'uk' in langs:
+                params.update({
+                    'title_uk': item.get('Description'),
+                    'address_uk': item.get('CityDescription')
+                })
+
+            if 'ru' in langs:
+                params.update({
+                    'title_ru': item.get('DescriptionRu'),
+                    'address_ru': item.get('CityDescriptionRu')
+                })
+
+        warehouses.append(Warehouse(**params))
+
+    Warehouse.objects.bulk_create(warehouses)

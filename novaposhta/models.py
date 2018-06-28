@@ -9,13 +9,11 @@ class Warehouse(models.Model):
 
     address = models.CharField(_('Address'), max_length=255, db_index=True)
 
-    search_fields = ['title', 'address']
-
     @property
     def full_name(self):
-        return '%s, %s' % (self.title, self.address)
+        return '{}, {}'.format(self.title, self.address)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.full_name
 
     class Meta:
